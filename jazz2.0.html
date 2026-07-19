@@ -520,15 +520,15 @@ const FITNESS = [
 
 const WANTS = [
   {id:"holster", name:"Cytac OWB Kydex Paddle Holster", meta:"Sig Sauer P365 (base model), right-hand", price:24.99,
-   link:"https://www.amazon.com/s?k=Cytac+OWB+Kydex+Paddle+Holster+Sig+P365"},
+   link:"https://www.amazon.com/CYTAC-Tactical-Security-R-Defender-CY-P365G3/dp/B08973W4QX"},
   {id:"instantpot", name:"Instant Pot Duo 3 Qt", meta:"", price:59.99,
-   link:"https://www.amazon.com/s?k=Instant+Pot+Duo+3+Qt"},
+   link:"https://instantpot.com/products/instant-pot-duo-mini-3qt-multi-use-pressure-cooker"},
   {id:"antora", name:"North Face Antora Jacket", meta:"Gray, XXS · Dick's Sporting Goods", price:130.00,
-   link:"https://www.dickssportinggoods.com/search/SearchDisplay?searchTerm=north+face+antora+jacket"},
+   link:"https://www.dickssportinggoods.com/p/the-north-face-womens-antora-jacket-21tnowwntrjcktxxxrnw/21tnowwntrjcktxxxrnw"},
   {id:"timberland", name:"Timberland Linden Woods Lace-Up Boot", meta:"Black, 7.5M · Rack Room Shoes", price:139.99,
-   link:"https://www.rackroomshoes.com/search?q=timberland+linden+woods+lace+up+boot"},
+   link:"https://www.rackroomshoes.com/p/timberland-womens-linden-woods-lace-up-boot/304623"},
   {id:"oura", name:"Oura Ring 5 + 1yr membership", meta:"Size 7 · wellness-device reimbursement eligible", price:468.99,
-   link:"https://www.amazon.com/s?k=Oura+Ring+5"},
+   link:"https://www.amazon.com/Oura-Ring-Smallest-Activity-Compatible/dp/B0GRJZX1D8"},
   {id:"belt-brown", name:"Brown leather belt, square buckle", meta:"Pending: merge with style capsule belt? Price/link not locked in", price:20.00, link:null, estimated:true}
 ];
 
@@ -714,7 +714,7 @@ function renderWants(){
   WANTS.forEach(w => {
     const isDone = !!wantsState[w.id];
     const priceStr = w.price != null ? `${w.estimated?'~':''}$${w.price.toFixed(2)}${w.estimated?' (est.)':''}` : "—";
-    const linkHtml = w.link ? `<a class="link" href="${w.link}" target="_blank" rel="noopener">View / search →</a>` : "";
+    const linkHtml = w.link ? `<a class="link" href="${w.link}" target="_blank" rel="noopener">View product →</a>` : "";
     const row = `<div class="want-card">
         <div class="body">
           <div class="name">${w.name}</div>

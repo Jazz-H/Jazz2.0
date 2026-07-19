@@ -57,18 +57,21 @@ jacket gray XXS ($130, Dick's), Timberland Linden Woods boot black 7.5M ($139.99
 Rack Room), Oura Ring 5 + membership ($468.99), brown leather belt square buckle
 (~$20 est., unconfirmed, pending decision on whether to merge with the style capsule's
 separate brown/cognac belt line item). Pending/Purchased sections each show a running
-total, plus a grand list total. Links currently point to retailer *search* pages, not
-verified direct product URLs (the real product links from the original Word doc were
-never successfully captured — Dick's blocked a cart-share link, others weren't saved
-as full URLs).
+total, plus a grand list total. Links now point to direct product pages (Amazon,
+Dick's, Rack Room Shoes, Instant Pot's own site) picked to match the noted spec
+(color/size) as closely as possible from search results — retailer sites block
+automated fetch/scrape verification (403s across the board, the same issue the
+original build hit trying to capture a Dick's cart-share link), so double-check size,
+color, and current price at checkout before buying. The brown belt still has no link;
+its price is a rough estimate pending the merge decision below.
 
 ## Known open items / suggested next steps
-1. Swap wants-list search links for real product URLs if/when available
-2. Search/filter for the capsule list (explicitly deferred, not built)
-3. Consider a 5th "Home/overview" tab (today's skin/hair + today's fitness at a glance)
-4. Confirm whether the Crest Whitestrips course (should've finished ~mid-July) needs
+1. Search/filter for the capsule list (explicitly deferred, not built)
+2. Consider a 5th "Home/overview" tab (today's skin/hair + today's fitness at a glance)
+3. Confirm whether the Crest Whitestrips course (should've finished ~mid-July) needs
    any remaining reference in the Skin/Hair routine, or is fully done
-5. Resolve the brown belt merge question (wants list vs. style capsule)
+4. Resolve the brown belt merge question (wants list vs. style capsule) — once
+   resolved, add its product link too
 
 ## User context (for tone/preferences if continuing this project)
 Goes by Jazz, Charlotte NC, business casual job, "Glow Up Season" self-improvement
