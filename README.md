@@ -100,7 +100,12 @@ push, Friday home/dumbbells). Per-exercise checkboxes that persist until manuall
 reset — NOT auto-reset weekly (explicit user preference). "Reset week" button clears
 all three days at once, now with a confirm() prompt since it's destructive/no-undo.
 
-**Wants:** Cytac holster ($24.99), Instant Pot Duo 3qt ($59.99), North Face Antora
+**Wants:** A quick-add bar sits at the top of the tab, always available regardless of
+edit mode — type a name and hit Enter (or tap the + button) to drop a new pending item
+straight onto the list with no modal, no price/link required upfront; focus stays in
+the field so you can add several in a row. (Edit mode's "+ Add want" still exists for
+filling in price/link/notes upfront in one form.) Cytac holster ($24.99), Instant Pot
+Duo 3qt ($59.99), North Face Antora
 jacket gray XXS ($130, Dick's), Timberland Linden Woods boot black 7.5M ($139.99,
 Rack Room), Oura Ring 5 + membership ($468.99), brown leather belt square buckle
 (~$20 est., unconfirmed, pending decision on whether to merge with the style capsule's
