@@ -1303,7 +1303,15 @@ function renderStyle(){
   if (rulesEdit) html += `<button class="add-row" onclick="addStyleRule()">+ Add rule</button>`;
   html += `</div></div></div>`;
 
-  html += `<div class="card"><div class="glance-head"><h3 style="margin:0;">Sizing</h3>${editChipHtml('sizes-card')}</div><div class="sizegrid">`;
+  html += `<div class="card pinned ${openPinned.has('sizes-card')?'open':''}" id="sizes-card">
+    <div class="coll-head" onclick="toggleRules('sizes-card')">
+      <div style="display:flex;align-items:center;gap:8px;"><h3>Sizing</h3><span class="insight">${sizes.length} sizes</span></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        ${editChipHtml('sizes-card')}
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="coll-body"><div class="coll-inner"><div class="sizegrid">`;
   sizes.forEach(([k,v],i) => {
     html += sizesEdit
       ? `<div class="editable" onclick="editSize(${i})"><span>${k}</span>${v}<span class="inline-pencil">${PENCIL_ICON}</span></div>`
@@ -1311,7 +1319,7 @@ function renderStyle(){
   });
   html += `</div>`;
   if (sizesEdit) html += `<button class="add-row" onclick="addSize()">+ Add size</button>`;
-  html += `<p class="footnote">*Oura Ring confirmed at size 7; range covers standard ring sizing.</p></div>`;
+  html += `<p class="footnote">*Oura Ring confirmed at size 7; range covers standard ring sizing.</p></div></div></div>`;
 
   html += `<div class="card"><div class="progress-wrap">
       <div class="progress-label"><span>Wardrobe built</span><b id="cap-progress-label"></b></div>
