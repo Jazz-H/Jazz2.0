@@ -1435,7 +1435,7 @@ function renderCapsuleLists(){
     + `<div class="total-row">Owned value <span>$${fmtMoney(ownedTotal)}</span></div>`;
   neededEl.innerHTML = (editCards.has('cap-needed-card')?`<button class="add-row" onclick="addCapsuleItem('needed')">+ Add item</button>`:"")
     + (buildGrouped(neededByCat) || `<div class="empty">All acquired.</div>`)
-    + `<div class="total-row">Still need total <span>$${fmtMoney(neededTotal)}</span></div>`;
+    + `<div class="total-row">Total <span>$${fmtMoney(neededTotal)}</span></div>`;
 
   document.getElementById("cap-owned-insight").textContent = `${ownedCount} items · $${fmtMoney(ownedTotal)}`;
   document.getElementById("cap-needed-insight").textContent = `${neededCount} items · $${fmtMoney(neededTotal)}`;
@@ -1563,7 +1563,7 @@ function renderWants(){
       <div class="coll-body"><div class="coll-inner">
         ${editCards.has('wants-pending-card')?`<button class="add-row" onclick="addWant()">+ Add want</button>`:""}
         ${pending||'<div class="empty">All caught up.</div>'}
-        <div class="total-row">Still need total <span>$${fmtMoney(pendingTotal)}</span></div>
+        <div class="total-row">Total <span>$${fmtMoney(pendingTotal)}</span></div>
       </div></div>
     </div>`;
   html += `<div class="card pinned ${openPinned.has('wants-purchased-card')?'open':''}" id="wants-purchased-card">
