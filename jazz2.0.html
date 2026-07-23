@@ -194,8 +194,9 @@
     flex-shrink:0; width:36px; height:36px; border-radius:50%; border:1.5px solid var(--olive-dim);
     background:none; color:var(--olive); display:flex; align-items:center; justify-content:center;
   }
-  .icon-btn.link{border-color:rgba(0,229,255,.4); color:var(--gold);}
-  .icon-btn.link svg{transform:translate(9.07px, 9.8px);}
+  /* .icon-btn.link must undo the generic text-link `.link` rule (display:inline-block,
+     margin-top) that otherwise wins the cascade and knocks the glyph off-center */
+  .icon-btn.link{border-color:rgba(0,229,255,.4); color:var(--gold); display:flex; margin-top:0;}
   .icon-btn:active{background:var(--surface-2);}
 
   /* wants */
@@ -567,7 +568,7 @@ let editMode = localStorage.getItem("edit-mode") === "1";
 // Collapsible open/closed state is tracked here (not just DOM classes) because
 // edits trigger full re-renders, which would otherwise silently re-collapse
 // whatever the user had open.
-let openPinned = new Set(["cap-needed-card", "wants-pending-card"]);
+let openPinned = new Set(["todo-card", "cap-needed-card", "wants-pending-card"]);
 let expandedTodos = new Set();
 let openDays = null; // lazily seeded with today's index on first renderSkin()
 
@@ -903,10 +904,12 @@ function renderHome(){
         ${expanded ? renderSubitems(t) : ""}
       </div>`;
   };
-  html += `<div class="card">`;
-  if (todoList.length > 0){
-    html += `<div class="glance-head"><h3>To-Do</h3><span class="insight">${totalOpen ? totalOpen+' open' : 'All done'}</span></div>`;
-  }
+  html += `<div class="card pinned ${openPinned.has('todo-card')?'open':''}" id="todo-card">
+    <div class="coll-head" onclick="toggleRules('todo-card')">
+      <div style="display:flex;align-items:center;gap:8px;"><h3>To-Do</h3><span class="insight">${todoList.length===0 ? 'Empty' : (totalOpen ? totalOpen+' open' : 'All done')}</span></div>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="coll-body"><div class="coll-inner">`;
   if (todoList.length === 0){
     html += `<div class="empty">Nothing on your list — add one above.</div>`;
   } else if (totalOpen === 0){
@@ -926,7 +929,7 @@ function renderHome(){
     });
     html += `</div>`;
   }
-  html += `</div>`;
+  html += `</div></div></div>`;
 
   if (completedItems.length){
     const completedRows = completedItems.map(t => {
@@ -1686,7 +1689,9 @@ document.querySelectorAll("nav.tabbar button").forEach(btn => {
     e.preventDefault();
     try{ handle.setPointerCapture(e.pointerId); }catch(err){}
     const rect = wrap.getBoundingClientRect();
-    drag = {wrap, list, clientY:e.clientY, grabOffset:e.clientY - rect.top, raf:0};
+    drag = {wrap, list, clientY:e.clientY, grabOffset:e.clientY - rect.top, raf:0,
+            clip:[wrap.closest(".coll-body"), wrap.closest(".pinned")].filter(Boolean)};
+    drag.clip.forEach(el => el.style.overflow = "visible"); // don't clip the lifted row
     wrap.classList.add("drag-active");
     document.body.classList.add("todo-dragging");
     tick();
@@ -1733,6 +1738,7 @@ document.querySelectorAll("nav.tabbar button").forEach(btn => {
     cancelAnimationFrame(drag.raf);
     drag.wrap.style.transform = "";
     drag.wrap.classList.remove("drag-active");
+    drag.clip.forEach(el => el.style.overflow = "");
     document.body.classList.remove("todo-dragging");
     const list = drag.list;
     drag = null;
