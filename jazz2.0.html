@@ -1031,7 +1031,7 @@ function renderHome(){
         </div>
         <div class="tile-label">Wants</div>
         <div class="tile-stat" style="color:var(--navy);">$${fmtMoney(pendingTotal)}</div>
-        <div class="tile-caption">${pendingItems.length} pending</div>
+        <div class="tile-caption">${pendingItems.length} still needed</div>
         <div class="progress-bar"><div class="progress-fill wants" style="width:${boughtPct}%"></div></div>
       </div>
     </div>`;
@@ -1057,7 +1057,7 @@ function renderHome(){
             `toggleCapsule('${cheapestNeeded.id}').then(renderHome);`, 'Mark owned') : ''}
         ${cheapest ? nextRow('wants', 'rgba(255,46,154,.15)', 'var(--navy)', BAG_ICON, cheapest.name,
             cheapest.price!=null?`$${fmtMoney(cheapest.price)}`:'',
-            'Wants · pending', cheapest.link,
+            'Wants · still need', cheapest.link,
             `toggleWant('${cheapest.id}').then(renderHome);`, 'Mark bought') : ''}
       </div>`;
   }
@@ -1551,7 +1551,7 @@ function renderWants(){
     </div>`;
   html += `<div class="card pinned ${openPinned.has('wants-pending-card')?'open':''}" id="wants-pending-card">
       <div class="coll-head" onclick="toggleRules('wants-pending-card')">
-        <div style="display:flex;align-items:center;gap:8px;"><h3>Pending</h3><span class="insight">${pendingItems.length} · $${fmtMoney(pendingTotal)}</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><h3>Still Need</h3><span class="insight">${pendingItems.length} · $${fmtMoney(pendingTotal)}</span></div>
         <div style="display:flex;align-items:center;gap:8px;">
           ${editChipHtml('wants-pending-card')}
           <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
@@ -1560,7 +1560,7 @@ function renderWants(){
       <div class="coll-body"><div class="coll-inner">
         ${editCards.has('wants-pending-card')?`<button class="add-row" onclick="addWant()">+ Add want</button>`:""}
         ${pending||'<div class="empty">All caught up.</div>'}
-        <div class="total-row">Pending total <span>$${fmtMoney(pendingTotal)}</span></div>
+        <div class="total-row">Still need total <span>$${fmtMoney(pendingTotal)}</span></div>
       </div></div>
     </div>`;
   html += `<div class="card pinned ${openPinned.has('wants-purchased-card')?'open':''}" id="wants-purchased-card">
