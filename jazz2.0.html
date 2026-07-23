@@ -1384,7 +1384,6 @@ function renderStyle(){
     </div>
     <div class="coll-body"><div class="coll-inner" id="cap-owned"></div></div>
   </div>`;
-  html += `<div class="card"><div class="total-row grand" id="cap-grand-total"></div></div>`;
   html += refCards;
   el.innerHTML = html;
   renderCapsuleLists();
@@ -1430,19 +1429,17 @@ function renderCapsuleLists(){
   const ownedTotal = capsule.filter(i => currentCapState(i) === "owned").reduce((s,i) => s + (i.price||0), 0);
   const neededTotal = capsule.filter(i => currentCapState(i) !== "owned").reduce((s,i) => s + (i.price||0), 0);
 
+  // No total rows here — the header insight chips already carry count + $.
   ownedEl.innerHTML = (editCards.has('cap-owned-card')?`<button class="add-row" onclick="addCapsuleItem('owned')">+ Add item</button>`:"")
-    + (buildGrouped(ownedByCat) || `<div class="empty">Nothing here yet.</div>`)
-    + `<div class="total-row">Owned value <span>$${fmtMoney(ownedTotal)}</span></div>`;
+    + (buildGrouped(ownedByCat) || `<div class="empty">Nothing here yet.</div>`);
   neededEl.innerHTML = (editCards.has('cap-needed-card')?`<button class="add-row" onclick="addCapsuleItem('needed')">+ Add item</button>`:"")
-    + (buildGrouped(neededByCat) || `<div class="empty">All acquired.</div>`)
-    + `<div class="total-row">Total <span>$${fmtMoney(neededTotal)}</span></div>`;
+    + (buildGrouped(neededByCat) || `<div class="empty">All acquired.</div>`);
 
   document.getElementById("cap-owned-insight").textContent = `${ownedCount} items · $${fmtMoney(ownedTotal)}`;
   document.getElementById("cap-needed-insight").textContent = `${neededCount} items · $${fmtMoney(neededTotal)}`;
   const pct = capsule.length ? Math.round((ownedCount / capsule.length) * 100) : 0;
   document.getElementById("cap-progress-label").textContent = `${ownedCount}/${capsule.length} · ${pct}%`;
   document.getElementById("cap-progress-fill").style.width = `${pct}%`;
-  document.getElementById("cap-grand-total").innerHTML = `Wardrobe total <span>$${fmtMoney(ownedTotal+neededTotal)}</span>`;
 }
 async function toggleCapsule(id){
   const cur = currentCapState(capsule.find(i=>i.id===id));
@@ -1563,7 +1560,6 @@ function renderWants(){
       <div class="coll-body"><div class="coll-inner">
         ${editCards.has('wants-pending-card')?`<button class="add-row" onclick="addWant()">+ Add want</button>`:""}
         ${pending||'<div class="empty">All caught up.</div>'}
-        <div class="total-row">Total <span>$${fmtMoney(pendingTotal)}</span></div>
       </div></div>
     </div>`;
   html += `<div class="card pinned ${openPinned.has('wants-purchased-card')?'open':''}" id="wants-purchased-card">
@@ -1576,10 +1572,8 @@ function renderWants(){
       </div>
       <div class="coll-body"><div class="coll-inner">
         ${done||'<div class="empty">Nothing marked yet.</div>'}
-        <div class="total-row">Spent so far <span>$${fmtMoney(doneTotal)}</span></div>
       </div></div>
     </div>`;
-  html += `<div class="card"><div class="total-row grand">List total <span>$${fmtMoney(pendingTotal+doneTotal)}</span></div></div>`;
   el.innerHTML = html;
 }
 function quickAddWant(){
