@@ -1319,7 +1319,9 @@ function renderStyle(){
   const el = document.getElementById("panel-style");
   const rulesEdit = editCards.has('rules-style');
   const sizesEdit = editCards.has('sizes-card');
-  let html = `<div class="card pinned ${openPinned.has('rules-style')?'open':''}" id="rules-style">
+  // Fit rules and Sizing are reference material, so they render below the
+  // working cards (progress, still need, in closet) at the bottom of the tab.
+  let refCards = `<div class="card pinned ${openPinned.has('rules-style')?'open':''}" id="rules-style">
     <div class="coll-head" onclick="toggleRules('rules-style')">
       <div style="display:flex;align-items:center;gap:8px;"><h3>Fit rules</h3><span class="insight">${styleRules.length} rules</span></div>
       <div style="display:flex;align-items:center;gap:8px;">
@@ -1328,15 +1330,15 @@ function renderStyle(){
       </div>
     </div>
     <div class="coll-body"><div class="coll-inner">`;
-  if (rulesEdit) html += `<button class="add-row" onclick="addStyleRule()">+ Add rule</button>`;
+  if (rulesEdit) refCards += `<button class="add-row" onclick="addStyleRule()">+ Add rule</button>`;
   styleRules.forEach((r,i) => {
-    html += rulesEdit
+    refCards += rulesEdit
       ? `<p class="rule editable" onclick="editStyleRule(${i})">${r}<span class="inline-pencil">${PENCIL_ICON}</span></p>`
       : `<p class="rule">${r}</p>`;
   });
-  html += `</div></div></div>`;
+  refCards += `</div></div></div>`;
 
-  html += `<div class="card pinned ${openPinned.has('sizes-card')?'open':''}" id="sizes-card">
+  refCards += `<div class="card pinned ${openPinned.has('sizes-card')?'open':''}" id="sizes-card">
     <div class="coll-head" onclick="toggleRules('sizes-card')">
       <div style="display:flex;align-items:center;gap:8px;"><h3>Sizing</h3><span class="insight">${sizes.length} sizes</span></div>
       <div style="display:flex;align-items:center;gap:8px;">
@@ -1345,17 +1347,17 @@ function renderStyle(){
       </div>
     </div>
     <div class="coll-body"><div class="coll-inner">`;
-  if (sizesEdit) html += `<button class="add-row" onclick="addSize()">+ Add size</button>`;
-  html += `<div class="sizegrid">`;
+  if (sizesEdit) refCards += `<button class="add-row" onclick="addSize()">+ Add size</button>`;
+  refCards += `<div class="sizegrid">`;
   sizes.forEach(([k,v],i) => {
-    html += sizesEdit
+    refCards += sizesEdit
       ? `<div class="editable" onclick="editSize(${i})"><span>${k}</span>${v}<span class="inline-pencil">${PENCIL_ICON}</span></div>`
       : `<div><span>${k}</span>${v}</div>`;
   });
-  html += `</div>`;
-  html += `<p class="footnote">*Oura Ring confirmed at size 7; range covers standard ring sizing.</p></div></div></div>`;
+  refCards += `</div>`;
+  refCards += `<p class="footnote">*Oura Ring confirmed at size 7; range covers standard ring sizing.</p></div></div></div>`;
 
-  html += `<div class="card"><div class="progress-wrap">
+  let html = `<div class="card"><div class="progress-wrap">
       <div class="progress-label"><span>Wardrobe built</span><b id="cap-progress-label"></b></div>
       <div class="progress-bar"><div class="progress-fill" id="cap-progress-fill"></div></div>
     </div></div>`;
@@ -1383,6 +1385,7 @@ function renderStyle(){
     <div class="coll-body"><div class="coll-inner" id="cap-owned"></div></div>
   </div>`;
   html += `<div class="card"><div class="total-row grand" id="cap-grand-total"></div></div>`;
+  html += refCards;
   el.innerHTML = html;
   renderCapsuleLists();
 }
