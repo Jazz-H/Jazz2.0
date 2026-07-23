@@ -376,6 +376,13 @@
     background:var(--surface-2); border-radius:12px; outline:1.5px solid var(--olive);
     box-shadow:0 10px 26px rgba(0,0,0,.55);
   }
+  /* dragging right past the threshold: dragged row shows cyan, the row above
+     (the future parent) gets a dashed cyan target outline */
+  .todo-wrap.drag-active.indenting .item{outline-color:var(--gold);}
+  .todo-wrap.indent-target .item{
+    background:rgba(0,229,255,.07); border-radius:12px;
+    outline:1.5px dashed rgba(0,229,255,.55);
+  }
   body.todo-dragging, body.todo-dragging *{user-select:none; -webkit-user-select:none;}
 
   .modal-backdrop{
@@ -1711,6 +1718,7 @@ document.querySelectorAll("nav.tabbar button").forEach(btn => {
     try{ handle.setPointerCapture(e.pointerId); }catch(err){}
     const rect = wrap.getBoundingClientRect();
     drag = {wrap, list, clientY:e.clientY, grabOffset:e.clientY - rect.top, raf:0,
+            startX:e.clientX, clientX:e.clientX, indentTarget:null,
             clip:[wrap.closest(".coll-body"), wrap.closest(".pinned")].filter(Boolean)};
     drag.clip.forEach(el => el.style.overflow = "visible"); // don't clip the lifted row
     wrap.classList.add("drag-active");
@@ -1719,7 +1727,7 @@ document.querySelectorAll("nav.tabbar button").forEach(btn => {
   });
 
   panel.addEventListener("pointermove", e => {
-    if (drag) drag.clientY = e.clientY;
+    if (drag){ drag.clientY = e.clientY; drag.clientX = e.clientX; }
   });
   panel.addEventListener("pointerup", () => endDrag(true));
   panel.addEventListener("pointercancel", () => endDrag(false));
@@ -1729,9 +1737,26 @@ document.querySelectorAll("nav.tabbar button").forEach(btn => {
     const mr = mainEl.getBoundingClientRect();
     if (drag.clientY < mr.top + 70) mainEl.scrollTop -= 9;
     else if (drag.clientY > mr.bottom - 110) mainEl.scrollTop += 9;
-    reorder();
+    // Dragging right past the threshold switches to indent mode: the row above
+    // becomes the nesting target and vertical reordering pauses.
+    const prev = prevTodoWrap(drag.wrap);
+    const wantIndent = (drag.clientX - drag.startX) > 48 && prev;
+    const target = wantIndent ? prev : null;
+    if (target !== drag.indentTarget){
+      if (drag.indentTarget) drag.indentTarget.classList.remove("indent-target");
+      drag.indentTarget = target;
+      if (target) target.classList.add("indent-target");
+      drag.wrap.classList.toggle("indenting", !!target);
+    }
+    if (!drag.indentTarget) reorder();
     position();
     drag.raf = requestAnimationFrame(tick);
+  }
+
+  function prevTodoWrap(w){
+    let el = w.previousElementSibling;
+    while (el && !el.classList.contains("todo-wrap")) el = el.previousElementSibling;
+    return el;
   }
 
   function reorder(){
@@ -1751,20 +1776,38 @@ document.querySelectorAll("nav.tabbar button").forEach(btn => {
     // clear the transform first so the rect reflects the row's slot position
     drag.wrap.style.transform = "";
     const top = drag.wrap.getBoundingClientRect().top;
-    drag.wrap.style.transform = `translateY(${drag.clientY - drag.grabOffset - top}px)`;
+    const dx = drag.indentTarget ? 28 : 0;
+    drag.wrap.style.transform = `translate(${dx}px, ${drag.clientY - drag.grabOffset - top}px)`;
   }
 
   function endDrag(commit){
     if (!drag) return;
     cancelAnimationFrame(drag.raf);
     drag.wrap.style.transform = "";
-    drag.wrap.classList.remove("drag-active");
+    drag.wrap.classList.remove("drag-active", "indenting");
+    if (drag.indentTarget) drag.indentTarget.classList.remove("indent-target");
     drag.clip.forEach(el => el.style.overflow = "");
     document.body.classList.remove("todo-dragging");
-    const list = drag.list;
+    const {list, wrap, indentTarget} = drag;
     drag = null;
-    if (commit) commitTodoOrder(list);
+    if (commit && indentTarget) commitNest(wrap, indentTarget);
+    else if (commit) commitTodoOrder(list);
     else renderHome(); // put rows back where the data says they belong
+  }
+
+  // Fold the dragged to-do into the row above as a sub-item; its own
+  // sub-items (if any) come along, flattened after it.
+  function commitNest(wrap, targetWrap){
+    const t = todoList.find(x => x.id === wrap.dataset.todoId);
+    const target = todoList.find(x => x.id === targetWrap.dataset.todoId);
+    if (!t || !target || t === target){ renderHome(); return; }
+    if (!target.subitems) target.subitems = [];
+    target.subitems.push({id:genId("sub"), text:t.text, done:false});
+    (t.subitems || []).forEach(s => target.subitems.push({id:genId("sub"), text:s.text, done:s.done}));
+    todoList = todoList.filter(x => x.id !== t.id);
+    expandedTodos.add(target.id);
+    saveContent("todo-content", todoList);
+    renderHome();
   }
 
   function commitTodoOrder(list){
