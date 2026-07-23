@@ -352,7 +352,13 @@
   .subitem-text{flex:1; font-size:12.5px; color:var(--text);}
   .subitem-text.checked{color:var(--text-dim); text-decoration:line-through; text-decoration-color:var(--line);}
   .subitem-del{flex-shrink:0; width:22px; height:22px; border:none; background:none; color:var(--text-dim); display:flex; align-items:center; justify-content:center;}
-  .subitem-add{display:flex; gap:6px; margin-top:2px;}
+  .subitem-add-toggle{
+    display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:14px;
+    border:1.5px dashed var(--olive-dim); background:none; color:var(--olive);
+    font-size:11.5px; font-weight:700; font-family:inherit; margin:2px 0 6px;
+  }
+  .subitem-add-toggle:active{background:rgba(198,255,61,.12);}
+  .subitem-add{display:flex; gap:6px; margin:2px 0 6px;}
   .subitem-add input{
     flex:1; min-width:0; background:var(--surface-2); border:1px solid var(--line); border-radius:8px;
     color:var(--text); font-size:12px; font-family:inherit; padding:0 10px; height:32px;
@@ -574,6 +580,7 @@ let editCards = new Set();
 // whatever the user had open.
 let openPinned = new Set(["todo-card", "cap-needed-card", "wants-pending-card"]);
 let expandedTodos = new Set();
+let subAddOpen = new Set(); // to-dos whose sub-list currently shows the add input
 let openDays = null; // lazily seeded with today's index on first renderSkin()
 
 // ---------- DEFAULT DATA (seeds localStorage on first run; everything below is editable in-app after) ----------
@@ -886,12 +893,15 @@ function renderHome(){
         <div class="subitem-text ${s.done?'checked':''}">${escapeHtml(s.text)}</div>
         <button class="subitem-del" onclick="event.stopPropagation(); deleteSubitem('${t.id}','${s.id}')" aria-label="Delete sub-item">${X_ICON}</button>
       </div>`).join("");
-    return `<div class="subitem-list" onclick="event.stopPropagation()">
-        ${rows}
-        <div class="subitem-add">
+    const addUi = subAddOpen.has(t.id)
+      ? `<div class="subitem-add">
           <input type="text" id="subitem-input-${t.id}" placeholder="Add sub-item" autocomplete="off" onkeydown="if(event.key==='Enter') addSubitem('${t.id}');">
           <button onclick="addSubitem('${t.id}')" aria-label="Add sub-item">${SMALL_PLUS_ICON}</button>
-        </div>
+        </div>`
+      : `<button class="subitem-add-toggle" onclick="openSubitemAdd('${t.id}')">${SMALL_PLUS_ICON} Add sub-item</button>`;
+    return `<div class="subitem-list" onclick="event.stopPropagation()">
+        ${addUi}
+        ${rows}
       </div>`;
   };
   const todoRow = (t) => {
@@ -1076,7 +1086,21 @@ function toggleTodoStar(id){
   renderHome();
 }
 function toggleTodoExpand(id){
-  if (expandedTodos.has(id)) expandedTodos.delete(id); else expandedTodos.add(id);
+  if (expandedTodos.has(id)){
+    expandedTodos.delete(id);
+    subAddOpen.delete(id); // reset to view-only next time it opens
+  } else {
+    expandedTodos.add(id);
+    // an empty sub-list has nothing to view, so jump straight to the input
+    const t = todoList.find(x=>x.id===id);
+    if (!(t.subitems||[]).length) subAddOpen.add(id);
+  }
+  renderHome();
+  const input = document.getElementById(`subitem-input-${id}`);
+  if (input) input.focus();
+}
+function openSubitemAdd(id){
+  subAddOpen.add(id);
   renderHome();
   const input = document.getElementById(`subitem-input-${id}`);
   if (input) input.focus();
