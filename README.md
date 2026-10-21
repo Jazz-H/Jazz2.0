@@ -96,7 +96,7 @@ clothes, moto gear, and everything else.
   **Back to list** brings it back.
 - **Priority.** High-priority items get a badge and sort first.
 
-**Jazz 3.0** is its own tab (third in the bar), made of sections; more are coming. Its bar button stands out with a raised pink-to-amber orb, and the tab opens on a gradient banner with a chip per section (Weight %, Glow 3/7…). Tapping a chip opens that section and jumps to it.
+**Jazz 3.0** is its own tab (third in the bar), made of sections; more are coming. Its bar button stands out with a raised blue orb, and the tab opens on a gradient banner with a chip per section (Weight %, Glow 3/7…). Tapping a chip opens that section and jumps to it.
 **Budget** is hidden from the bar for now (its data, bills on Home, and links to
 `?tab=budget` all still work). Old `?tab=fitness` links open Jazz 3.0.
 
