@@ -96,7 +96,7 @@ clothes, moto gear, and everything else.
   **Back to list** brings it back.
 - **Priority.** High-priority items get a badge and sort first.
 
-**Jazz 3.0** is its own tab (third in the bar), made of sections; more are coming.
+**Jazz 3.0** is its own tab (third in the bar), made of sections; more are coming. Its bar button stands out with a raised pink-to-amber orb, and the tab opens on a gradient banner with a chip per section (Weight %, Glow 3/7…). Tapping a chip opens that section and jumps to it.
 **Budget** is hidden from the bar for now (its data, bills on Home, and links to
 `?tab=budget` all still work). Old `?tab=fitness` links open Jazz 3.0.
 
@@ -257,7 +257,7 @@ npx playwright install chromium   # or set CHROMIUM_PATH to an existing Chromium
 npm test
 ```
 
-The suite (433 checks) drives the real app in headless Chromium against a tiny built-in
+The suite (437 checks) drives the real app in headless Chromium against a tiny built-in
 server. It covers:
 - every tab on phone and desktop;
 - the + sheet in every mode (to-do dates, repeats and sub-items; shopping price/category/
