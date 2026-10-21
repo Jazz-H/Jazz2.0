@@ -1454,6 +1454,24 @@ await section("Jazz 3.0 stands out: nav orb and hero chips", async () => {
   await ctx.close();
 });
 
+await section("Fitness: month-by-month weight history", async () => {
+  const { ctx, page, errors } = await openApp({ query: "?tab=jazz3" });
+  const r = await page.evaluate(() => {
+    const d = n => addDaysIso(n);
+    fitness.start = 115; fitness.goal = 130;
+    fitness.weights = [[-140, 115], [-112, 117.6], [-84, 119.2], [-50, 124.4], [0, 125.8]].map(([n, lbs], i) => ({ id: "w" + i, date: d(n), lbs }));
+    renderFitness();
+    const s = weightStatus();
+    return { months: document.querySelectorAll("#weight-card .weight-months > div").length - 1, text: document.querySelector("#weight-card .goal-outlook").textContent.replace(/\s+/g, " "), rateAll: s.rateAll, rate: s.rate, eta: !!s.eta };
+  });
+  check("a By month list appears once weigh-ins span months", r.months >= 4, r);
+  check("the all-time change and monthly average show", /Since \w+.*\+10\.8 lb.*lb a month/.test(r.text), r.text);
+  check("sparse recent weigh-ins fall back to the all-time pace", r.rateAll === true && r.rate > 0.4 && r.eta && r.text.includes("on average"), r);
+  check("one month of weigh-ins shows no By month list", await page.evaluate(() => { fitness.weights = [{ id: "a", date: addDaysIso(0), lbs: 125 }]; renderFitness(); return !document.querySelector(".weight-months"); }));
+  check("no JS errors", errors.length === 0, errors);
+  await ctx.close();
+});
+
 await section("Fitness: weigh-in day reminder", async () => {
   const { ctx, page, errors } = await openApp({});
   const r = await page.evaluate(() => {
